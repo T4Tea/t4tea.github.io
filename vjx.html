@@ -1,38 +1,27 @@
+<!DOCTYPE html>
 <html>
 <head>
 	<meta charset="UTF-8">
 </head>
 <body>
-	<div align="center">
-	<form action="http://www.82190555.com/index/qqvod.php?">
-		<table>
-			<tr>
-				<td>
-					<input type=text name=url placeholder="在此处粘贴链接" >
-					<input type="submit" value="无名小站">
-				</td>
-			</tr>
-		</table>
-	</form>
-	<form action="http://qtv.soshane.com/ko.php?">
-		<table>
-			<tr>
-				<td>
-					<input type=text name=url placeholder="在此处粘贴链接" >
-					<input type="submit" value="六六解析">
-				</td>
-			</tr>
-		</table>
-	</form>
-	<form action="http://qmyouku.duapp.com/index.php?">
-		<table>
-			<tr>
-				<td>
-					<input type=text name=url placeholder="在此处粘贴链接" >
-					<input type="submit" value="全民VIP解析">
-				</td>
-			</tr>
-		</table>
-	</form>
-	</div>
+	<select id="jiexi">
+		<option value="http://jx.yylep.com/?url=">Lep解析</option>
+		<option value="http://www.82190555.com/video.php?url=">无名小站</option>
+		<option value="http://qmyouku.duapp.com/index.php?url=">全民VIP解析（优酷）</option>	
+		<option value="http://beaacc.com/api.php?url=">beac解析</option>
+		<option value="http://jx.maoyun.tv/index.php?id=">猫云解析</option>
+		<option value="https://api.daidaitv.com/index/?url=">呆呆TV</option>
+		<option value="http://jiexi.071811.cc/jx.php?url=">石头云1</option>
+		<option value="http://jiexi.071811.cc/jx2.php?url=">石头云2</option>
+	</select>
+	<input type=text id="url" placeholder="在此处粘贴链接">
+	<input type="button" onclick="clicktoplay()" value="点击播放">
+	<iframe id="player" src="" allowfullscreen="true"></iframe>
+	<script>
+		function clicktoplay(){
+			var jiexi = document.getElementById("jiexi").value;
+			var url = document.getElementById("url").value;
+			document.getElementById("player").src = jiexi + url;
+		}
+	</script>
 </html>
