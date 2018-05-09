@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>VJX</title>
+	<link rel="shortcut icon" type=image/x-icon href="https://assets-cdn.github.com/favicon.ico" />
+	<link rel="stylesheet" type="text/css" href="/css/vjx.css">
+	<script type="text/javascript" src="/js/vjx.js"></script>
+</head>
+<body>
+	<div>
+		<select id="jx">
+			<option value="http://jx.yylep.com/?url=">Lep解析</option>
+			<option value="http://www.82190555.com/video.php?url=">无名小站</option>
+			<option value="http://qmyouku.duapp.com/index.php?url=">全民VIP解析（优酷）</option>	
+			<option value="http://beaacc.com/api.php?url=">beac解析</option>
+			<option value="http://jx.maoyun.tv/index.php?id=">猫云解析</option>
+			<option value="https://api.daidaitv.com/index/?url=">呆呆TV</option>
+			<option value="http://jiexi.071811.cc/jx.php?url=">石头云1</option>
+			<option value="http://jiexi.071811.cc/jx2.php?url=">石头云2</option>
+		</select>
+		<input type=text id="url" placeholder="在此处粘贴链接" />
+		<input type=button id="play" onclick="clicktoplay()" value="点击播放" />
+	</div>
+	<iframe id="player" allowfullscreen="true"></iframe>
+</body>
+</html>
