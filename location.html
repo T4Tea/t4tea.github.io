@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>当前位置</title>
+    <link rel="shortcut icon" type=image/x-icon href="https://t4tea.github.io/favicon.ico" />
+</head>
+<body>
+    <p id="coords">定位中……</p>
+    <p id="coords2"></p>
+    <p><a id="baidumap" target=_blank></a></p>
+    <p><a id="amap" target=_blank></a></p>
+    <p><a id="openstreetmap" target=_blank></a></p>
+    <p><a id="gmap" target=_blank></a></p>
+    <script type="text/javascript">
+        function dec2deg (coords) {
+            d = parseInt(coords)
+            m = parseInt(coords % 1 * 60)
+            s = Math.round(coords % 1 * 60 % 1 * 60 * 100) / 100
+            return d + "°" + m + "'" + s + '"'
+        }
+        function success(position) {
+            var longitude = position.coords.longitude;
+            var latitude = position.coords.latitude;
+            document.querySelector('#coords').textContent = "经度，纬度：" + dec2deg(longitude) + ", " + dec2deg(latitude) + " (" + longitude + ", " + latitude + ")";
+            document.querySelector('#coords2').textContent = "纬度，经度：" + dec2deg(latitude) + ", " + dec2deg(longitude) + " (" + latitude + ", " + longitude + ")";
+            document.querySelector('#baidumap').href = "http://api.map.baidu.com/lbsapi/getpoint/index.html";
+            document.querySelector('#baidumap').textContent = "百度地图";
+            document.querySelector('#amap').href = "https://lbs.amap.com/console/show/picker";
+            document.querySelector('#amap').textContent = "高德地图";
+            document.querySelector('#openstreetmap').href = "https://www.openstreetmap.org/#map=16/" + latitude + "/" + longitude;
+            document.querySelector('#openstreetmap').textContent = "OpenStreetMap";
+            document.querySelector('#gmap').href = "https://www.google.com/maps/@" + latitude + "," + longitude + ",16z";
+            document.querySelector('#gmap').textContent = "Google Map";
+        }
+        function error() {
+            document.querySelector('#coords').textContent = "无法获取位置。";
+        }
+        if (!navigator.geolocation) {
+            document.querySelector('#coords').textContent = "当前浏览器不支持。";
+        } else {
+            navigator.geolocation.getCurrentPosition(success, error);
+        }
+    </script>
+</body>
+</html>
