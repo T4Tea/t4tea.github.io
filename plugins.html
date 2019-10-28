@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Plugins</title>
+    <link rel="shortcut icon" type=image/x-icon href="https://t4tea.github.io/favicon.ico" />
+    <style>
+        table {
+            background-color: black;
+        }
+        th, td {
+            background-color: white;
+            padding: 5px;
+            }
+    </style>
+</head>
+<body>
+    <table id="pluginTable">
+        <thead>
+            <tr>
+                <th>Plugin Name</th>
+                <th>File Name</th>
+                <th>Description</th>
+                <th>Version</th>
+                <th>MIME Type</th>
+                <th>Description</th>
+                <th>Suffixes</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <script type="text/javascript">
+        var L = navigator.plugins.length;
+        var tb = document.getElementById('pluginTable');
+        for(var i = 0; i < L; i++) {
+            let newRow = tb.insertRow();
+            newRow.insertCell().textContent = navigator.plugins[i].name;
+            newRow.insertCell().textContent = navigator.plugins[i].filename;
+            newRow.insertCell().textContent = navigator.plugins[i].description;
+            newRow.insertCell().textContent = navigator.plugins[i].version;
+            var ml = navigator.plugins[i].length
+            var mt = ""
+            var md = ""
+            var ms = ""
+            for (var j=0; j<ml; j++) {
+                mt += navigator.plugins[i][j].type + " | ";
+                md += navigator.plugins[i][j].description + " | ";
+                ms += navigator.plugins[i][j].suffixes + " | ";
+            }
+            newRow.insertCell().textContent = mt.slice(0,-3);
+            newRow.insertCell().textContent = md.slice(0,-3);
+            newRow.insertCell().textContent = ms.slice(0,-3);
+            }
+     </script>
+</body>
+</html>
