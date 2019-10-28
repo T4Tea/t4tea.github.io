@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>网络连接</title>
+    <link rel="shortcut icon" type=image/x-icon href="https://t4tea.github.io/favicon.ico" />
+</head>
+<body>
+    <script type="text/javascript">
+        document.write("<p><strong>网络类型</strong>：" + navigator.connection.type + "</p>")
+        document.write("<p><strong>连接有效类型</strong>：" + navigator.connection.effectiveType + "</p>")
+        document.write("<p><strong>有效带宽</strong>：" + navigator.connection.downlink + " Mb/s</p>")
+        document.write("<p><strong>最快下载速度</strong>：" + navigator.connection.downlinkMax + " Mb/s</p>")
+        document.write("<p><strong>往返时延</strong>：" + navigator.connection.rtt + " ms</p>")
+        document.write("<p><strong>省流量模式</strong>：" + navigator.connection.saveData + "</p>")
+    </script>
+</body>
+</html>
