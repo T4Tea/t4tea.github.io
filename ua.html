@@ -1,13 +1,19 @@
 <!DOCTYPE html>
 <html>
+<head>
     <meta charset="UTF-8">
     <title>User Agent</title>
     <link rel="shortcut icon" type=image/x-icon href="https://t4tea.github.io/favicon.ico" />
+</head>
 <body>
     <script type="text/javascript">
-        document.write("<p><strong>UserAgent</strong>: " + navigator.userAgent + "</p>")
-        document.write("<p><strong>Plagform</strong>: " + navigator.platform + "</p>")
-        document.write("<p><strong>Languages</strong>: " + navigator.languages + "</p>")
+        document.write("<p><strong>浏览器用户代理</strong>：" + navigator.userAgent + "</p>")
+        document.write("<p><strong>浏览器平台</strong>：" + navigator.platform + "</p>")
+        document.write("<p><strong>浏览器用户首先语言</strong>：" + navigator.language + "</p>")
+        document.write("<p><strong>浏览器用户语言</strong>：" + navigator.languages + "</p>")
+        document.write("<p><strong>允许Cookies</strong>：" + navigator.cookieEnabled + "</p>")
+        document.write("<p><strong>发送请勿跟踪</strong>：" + navigator.doNotTrack + "</p>")
+        document.write("<p><strong>支持的最大同时触摸的点数</strong>：" + navigator.maxTouchPoints + "</p>")
     </script>
 </body>
 </html>
