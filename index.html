@@ -3,418 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="个人书签管理首页">
     <title>首页</title>
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-    <style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-
-    body {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-        background-color: #f5f5f5;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        min-height: 100vh;
-        padding: 20px;
-    }
-
-    .search-container {
-        margin-top: 100px;
-        width: 100%;
-        max-width: 600px;
-        text-align: center;
-    }
-
-    .search-engines {
-        margin-bottom: 15px;
-    }
-
-    .search-engine-btn {
-        padding: 8px 15px;
-        margin: 0 5px;
-        border: none;
-        border-radius: 20px;
-        background-color: #fff;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-
-    .search-engine-btn.active {
-        background-color: #e3e3e3;
-    }
-
-    .search-box {
-        display: flex;
-        width: 100%;
-    }
-
-    .search-input {
-        flex: 1;
-        padding: 12px 20px;
-        font-size: 16px;
-        border: 2px solid #ddd;
-        border-radius: 24px;
-        outline: none;
-        transition: border-color 0.3s;
-    }
-
-    .search-input:focus {
-        border-color: #4285f4;
-    }
-
-    .bookmarks-container {
-        margin-top: 40px;
-        width: 100%;
-        max-width: 1000px;
-    }
-
-    .bookmarks-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 20px;
-        padding: 20px;
-    }
-
-    .bookmark-card {
-        background: white;
-        padding: 15px;
-        border-radius: 10px;
-        cursor: pointer;
-        transition: transform 0.2s, box-shadow 0.2s;
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .bookmark-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-
-    .bookmark-card img {
-        width: 32px;
-        height: 32px;
-        margin-bottom: 8px;
-    }
-
-    @media screen and (min-width: 768px) {
-        .bookmark-card {
-            flex-direction: row;
-            justify-content: flex-start;
-            text-align: left;
-            padding: 10px 15px;
-        }
-
-        .bookmark-card img {
-            margin-bottom: 0;
-            margin-right: 12px;
-        }
-
-        .bookmark-title {
-            flex: 1;
-        }
-    }
-
-    .bookmark-title {
-        font-size: 14px;
-        color: #333;
-        word-break: break-word;
-    }
-
-    .edit-btn {
-        position: absolute;
-        top: 5px;
-        right: 5px;
-        padding: 4px;
-        background: none;
-        border: none;
-        cursor: pointer;
-        display: none;
-    }
-
-    .bookmark-card.show-edit .edit-btn {
-        display: block;
-    }
-
-    .bookmark-card:hover .edit-btn {
-        opacity: 1;
-    }
-
-    .modal {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-        justify-content: center;
-        align-items: center;
-    }
-
-    .modal-content {
-        background-color: white;
-        padding: 20px;
-        border-radius: 10px;
-        width: 90%;
-        max-width: 400px;
-    }
-
-    .modal input {
-        width: 100%;
-        padding: 8px;
-        margin: 10px 0;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-    }
-
-    .modal-buttons {
-        display: flex;
-        justify-content: flex-end;
-        gap: 10px;
-        margin-top: 15px;
-    }
-
-    .modal button {
-        padding: 8px 15px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-    }
-
-    .save-btn {
-        background-color: #4285f4;
-        color: white;
-    }
-
-    .cancel-btn {
-        background-color: #ddd;
-    }
-
-    .add-bookmark {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-color: #f8f8f8;
-        border: 2px dashed #ddd;
-        font-size: 24px;
-        color: #999;
-    }
-    </style>
+    <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
+    <!-- 搜索容器 -->
     <div class="search-container">
-        <div class="search-engines">
-            <button class="search-engine-btn active" data-engine="baidu">百度</button>
-            <button class="search-engine-btn" data-engine="google">Google</button>
-            <button class="search-engine-btn" data-engine="bing">必应</button>
+        <div class="search-engines" role="radiogroup" aria-label="选择搜索引擎">
+            <button class="search-engine-btn active" data-engine="baidu" role="radio" aria-checked="true">
+                百度
+            </button>
+            <button class="search-engine-btn" data-engine="google" role="radio" aria-checked="false">
+                Google
+            </button>
+            <button class="search-engine-btn" data-engine="bing" role="radio" aria-checked="false">
+                必应
+            </button>
         </div>
         <div class="search-box">
-            <input type="text" class="search-input" placeholder="请输入搜索内容..." autofocus>
+            <input
+                type="text"
+                class="search-input"
+                placeholder="请输入搜索内容..."
+                aria-label="搜索内容"
+                autofocus
+            />
+            <button class="search-btn" aria-label="搜索">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="M21 21l-4.35-4.35"></path>
+                </svg>
+            </button>
         </div>
     </div>
 
+    <!-- 书签容器 -->
     <div class="bookmarks-container">
-        <div class="bookmarks-grid"></div>
+        <div class="bookmarks-grid" role="list" aria-label="书签列表">
+            <!-- 书签将通过 JavaScript 动态生成 -->
+        </div>
     </div>
 
-    <div class="modal" id="editModal">
+    <!-- 编辑模态框 -->
+    <div class="modal" id="editModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
         <div class="modal-content">
-            <h3>编辑网址</h3>
-            <input type="text" id="titleInput" placeholder="标题">
-            <input type="url" id="urlInput" placeholder="URL">
-            <div class="modal-buttons">
-                <button class="cancel-btn">取消</button>
-                <button class="save-btn">保存</button>
+            <div class="modal-header">
+                <h3 id="modalTitle">添加书签</h3>
+                <button class="modal-close" aria-label="关闭">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="titleInput">标题</label>
+                    <input
+                        type="text"
+                        id="titleInput"
+                        placeholder="输入书签标题"
+                        autocomplete="off"
+                    />
+                </div>
+                <div class="form-group">
+                    <label for="urlInput">网址</label>
+                    <input
+                        type="url"
+                        id="urlInput"
+                        placeholder="https://example.com"
+                        autocomplete="off"
+                    />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary">取消</button>
+                <button class="btn btn-primary">保存</button>
             </div>
         </div>
     </div>
 
-    <script>
-    // 搜索引擎配置
-    const searchEngines = {
-        baidu: 'https://www.baidu.com/s?wd=',
-        google: 'https://www.google.com/search?q=',
-        bing: 'https://www.bing.com/search?q='
-    };
+    <!-- 确认删除对话框 -->
+    <div class="modal confirm-dialog" id="confirmModal" role="dialog" aria-modal="true">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="confirm-icon">⚠️</div>
+                <div class="confirm-title" id="confirmTitle">删除书签</div>
+                <div class="confirm-message" id="confirmMessage">确定要删除这个书签吗？</div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary">取消</button>
+                <button class="btn btn-danger">删除</button>
+            </div>
+        </div>
+    </div>
 
-    let currentEngine = 'baidu';
+    <!-- 右键菜单 -->
+    <div class="context-menu" id="contextMenu" role="menu">
+        <!-- 菜单项将通过 JavaScript 动态生成 -->
+    </div>
 
-    // 初始化默认书签
-    let bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [
-        { title: '百度', url: 'https://www.baidu.com', icon: 'https://www.baidu.com/favicon.ico' },
-        { title: 'Google', url: 'https://www.google.com', icon: 'https://www.google.com/favicon.ico' },
-        { title: '必应', url: 'https://www.bing.com', icon: 'https://www.bing.com/favicon.ico' },
-        { title: 'GitHub', url: 'https://github.com', icon: 'https://github.com/favicon.ico' }
-    ];
+    <!-- 提示消息 -->
+    <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
-    // 搜索引擎切换
-    document.querySelector('.search-engines').addEventListener('click', (e) => {
-        if (e.target.classList.contains('search-engine-btn')) {
-            document.querySelectorAll('.search-engine-btn').forEach(btn => btn.classList.remove('active'));
-            e.target.classList.add('active');
-            currentEngine = e.target.dataset.engine;
-        }
-    });
-
-    // 搜索功能
-    document.querySelector('.search-input').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            const searchTerm = e.target.value.trim();
-            if (searchTerm) {
-                window.open(searchEngines[currentEngine] + encodeURIComponent(searchTerm), '_blank');
-            }
-        }
-    });
-
-    // 渲染书签
-    function renderBookmarks() {
-        const grid = document.querySelector('.bookmarks-grid');
-        grid.innerHTML = '';
-
-        bookmarks.forEach((bookmark, index) => {
-            const card = document.createElement('div');
-            card.className = 'bookmark-card';
-            card.innerHTML = `
-                <img src="${bookmark.icon}" alt="${bookmark.title}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2232%22 height=%2232%22><rect width=%2232%22 height=%2232%22 fill=%22%23ddd%22/></svg>'">
-                <div class="bookmark-title">${bookmark.title}</div>
-                <button class="edit-btn">✏️</button>
-            `;
-
-            let pressTimer;
-            let isLongPress = false;
-
-            // 右键菜单
-            card.addEventListener('contextmenu', (e) => {
-                e.preventDefault();
-                card.classList.add('show-edit');
-            });
-
-            // 长按开始
-            card.addEventListener('touchstart', () => {
-                pressTimer = setTimeout(() => {
-                    isLongPress = true;
-                    card.classList.add('show-edit');
-                }, 500);
-            });
-
-            // 长按结束
-            card.addEventListener('touchend', () => {
-                clearTimeout(pressTimer);
-                if (!isLongPress) {
-                    try {
-                        const url = new URL(bookmark.url);
-                        window.open(url.href, '_blank');
-                    } catch (error) {
-                        console.error('Invalid URL:', bookmark.url);
-                    }
-                }
-                isLongPress = false;
-            });
-
-            // 点击事件
-            card.addEventListener('click', (e) => {
-                if (e.target.classList.contains('edit-btn')) {
-                    e.stopPropagation();
-                    openEditModal(index);
-                    card.classList.remove('show-edit');
-                } else if (!e.target.classList.contains('edit-btn') && !isLongPress) {
-                    try {
-                        const url = new URL(bookmark.url);
-                        window.open(url.href, '_blank');
-                    } catch (error) {
-                        console.error('Invalid URL:', bookmark.url);
-                    }
-                }
-            });
-
-            // 点击其他区域隐藏编辑按钮
-            document.addEventListener('click', (e) => {
-                if (!card.contains(e.target)) {
-                    card.classList.remove('show-edit');
-                }
-            });
-
-            grid.appendChild(card);
-        });
-
-        // 添加"添加书签"按钮
-        const addCard = document.createElement('div');
-        addCard.className = 'bookmark-card add-bookmark';
-        addCard.innerHTML = '+';
-        addCard.addEventListener('click', () => openEditModal(-1));
-        grid.appendChild(addCard);
-    }
-
-    // 打开编辑模态框
-    function openEditModal(index) {
-        const modal = document.getElementById('editModal');
-        const titleInput = document.getElementById('titleInput');
-        const urlInput = document.getElementById('urlInput');
-
-        if (index === -1) {
-            // 新建书签
-            titleInput.value = '';
-            urlInput.value = '';
-        } else {
-            // 编辑现有书签
-            titleInput.value = bookmarks[index].title;
-            urlInput.value = bookmarks[index].url;
-        }
-
-        modal.style.display = 'flex';
-
-        // 保存按钮事件
-        const saveBtn = modal.querySelector('.save-btn');
-        const saveHandler = () => {
-            const title = titleInput.value.trim();
-            const url = urlInput.value.trim();
-
-            if (title && url) {
-                if (index === -1) {
-                    // 新建书签
-                    bookmarks.push({
-                        title,
-                        url,
-                        icon: `${new URL(url).origin}/favicon.ico`
-                    });
-                } else {
-                    // 更新现有书签
-                    bookmarks[index] = {
-                        ...bookmarks[index],
-                        title,
-                        url,
-                        icon: `${new URL(url).origin}/favicon.ico`
-                    };
-                }
-                localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
-                renderBookmarks();
-                closeModal();
-            }
-        };
-        saveBtn.onclick = saveHandler;
-
-        // 取消按钮事件
-        const cancelBtn = modal.querySelector('.cancel-btn');
-        cancelBtn.onclick = closeModal;
-    }
-
-    // 关闭模态框
-    function closeModal() {
-        const modal = document.getElementById('editModal');
-        modal.style.display = 'none';
-        // 移除之前的事件监听器
-        modal.querySelector('.save-btn').onclick = null;
-        modal.querySelector('.cancel-btn').onclick = null;
-    }
-
-    // 初始化渲染
-    renderBookmarks();
-    </script>
+    <!-- JavaScript -->
+    <script src="/js/app.js"></script>
 </body>
 </html>
