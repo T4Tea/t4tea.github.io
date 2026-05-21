@@ -1,19 +1,46 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Agent</title>
-    <link rel="shortcut icon" type=image/x-icon href="https://t4tea.github.io/favicon.ico" />
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        p {
+            margin: 10px 0;
+            padding: 8px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            word-break: break-all;
+        }
+        strong {
+            color: #333;
+        }
+    </style>
 </head>
 <body>
-    <script type="text/javascript">
-        document.write("<p><strong>浏览器用户代理</strong>：" + navigator.userAgent + "</p>")
-        document.write("<p><strong>浏览器平台</strong>：" + navigator.platform + "</p>")
-        document.write("<p><strong>浏览器用户首先语言</strong>：" + navigator.language + "</p>")
-        document.write("<p><strong>浏览器用户语言</strong>：" + navigator.languages + "</p>")
-        document.write("<p><strong>允许Cookies</strong>：" + navigator.cookieEnabled + "</p>")
-        document.write("<p><strong>发送请勿跟踪</strong>：" + navigator.doNotTrack + "</p>")
-        document.write("<p><strong>支持的最大同时触摸的点数</strong>：" + navigator.maxTouchPoints + "</p>")
+    <p><strong>浏览器用户代理</strong>：<span id="userAgent"></span></p>
+    <p><strong>浏览器平台</strong>：<span id="platform"></span></p>
+    <p><strong>浏览器用户首选语言</strong>：<span id="language"></span></p>
+    <p><strong>浏览器用户语言</strong>：<span id="languages"></span></p>
+    <p><strong>允许Cookies</strong>：<span id="cookieEnabled"></span></p>
+    <p><strong>发送请勿跟踪</strong>：<span id="doNotTrack"></span></p>
+    <p><strong>支持的最大同时触摸点数</strong>：<span id="maxTouchPoints"></span></p>
+
+    <script>
+        document.getElementById('userAgent').textContent = navigator.userAgent;
+        document.getElementById('platform').textContent = navigator.platform;
+        document.getElementById('language').textContent = navigator.language;
+        document.getElementById('languages').textContent = navigator.languages ? navigator.languages.join(', ') : '未知';
+        document.getElementById('cookieEnabled').textContent = navigator.cookieEnabled ? '是' : '否';
+        document.getElementById('doNotTrack').textContent = navigator.doNotTrack === '1' ? '是' : '否';
+        document.getElementById('maxTouchPoints').textContent = navigator.maxTouchPoints || '0';
     </script>
 </body>
 </html>

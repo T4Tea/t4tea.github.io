@@ -1,18 +1,59 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>网络连接</title>
-    <link rel="shortcut icon" type=image/x-icon href="https://t4tea.github.io/favicon.ico" />
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        p {
+            margin: 10px 0;
+            padding: 8px;
+            background: #f5f5f5;
+            border-radius: 4px;
+        }
+        strong {
+            color: #333;
+        }
+    </style>
 </head>
 <body>
-    <script type="text/javascript">
-        document.write("<p><strong>网络类型</strong>：" + navigator.connection.type + "</p>")
-        document.write("<p><strong>连接有效类型</strong>：" + navigator.connection.effectiveType + "</p>")
-        document.write("<p><strong>有效带宽</strong>：" + navigator.connection.downlink + " Mb/s</p>")
-        document.write("<p><strong>最快下载速度</strong>：" + navigator.connection.downlinkMax + " Mb/s</p>")
-        document.write("<p><strong>往返时延</strong>：" + navigator.connection.rtt + " ms</p>")
-        document.write("<p><strong>省流量模式</strong>：" + navigator.connection.saveData + "</p>")
+    <div id="connectionInfo">
+        <p><strong>网络类型</strong>：<span id="type">检测中...</span></p>
+        <p><strong>连接有效类型</strong>：<span id="effectiveType">检测中...</span></p>
+        <p><strong>有效带宽</strong>：<span id="downlink">检测中...</span></p>
+        <p><strong>最快下载速度</strong>：<span id="downlinkMax">检测中...</span></p>
+        <p><strong>往返时延</strong>：<span id="rtt">检测中...</span></p>
+        <p><strong>省流量模式</strong>：<span id="saveData">检测中...</span></p>
+    </div>
+
+    <script>
+        function updateConnectionInfo() {
+            if (!navigator.connection) {
+                document.getElementById('connectionInfo').innerHTML = '<p>当前浏览器不支持网络连接 API</p>';
+                return;
+            }
+
+            const connection = navigator.connection;
+            document.getElementById('type').textContent = connection.type || '未知';
+            document.getElementById('effectiveType').textContent = connection.effectiveType || '未知';
+            document.getElementById('downlink').textContent = (connection.downlink || '未知') + ' Mb/s';
+            document.getElementById('downlinkMax').textContent = (connection.downlinkMax || '未知') + ' Mb/s';
+            document.getElementById('rtt').textContent = (connection.rtt || '未知') + ' ms';
+            document.getElementById('saveData').textContent = connection.saveData ? '是' : '否';
+        }
+
+        updateConnectionInfo();
+
+        if (navigator.connection) {
+            navigator.connection.addEventListener('change', updateConnectionInfo);
+        }
     </script>
 </body>
 </html>
