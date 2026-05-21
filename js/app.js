@@ -6,18 +6,15 @@
 const SEARCH_ENGINES = {
     baidu: {
         name: '百度',
-        url: 'https://www.baidu.com/s?wd=',
-        icon: '🔍'
+        url: 'https://www.baidu.com/s?wd='
     },
     google: {
         name: 'Google',
-        url: 'https://www.google.com/search?q=',
-        icon: '🔍'
+        url: 'https://www.google.com/search?q='
     },
     bing: {
         name: '必应',
-        url: 'https://www.bing.com/search?q=',
-        icon: '🔍'
+        url: 'https://www.bing.com/search?q='
     }
 };
 
@@ -34,7 +31,7 @@ let state = {
     currentEngine: 'baidu',
     bookmarks: [],
     editingIndex: -1,
-    contextMenuIndex: -1
+    isEditMode: false
 };
 
 // DOM 元素
@@ -50,15 +47,16 @@ function init() {
         searchInput: document.querySelector('.search-input'),
         searchBtn: document.querySelector('.search-btn'),
         bookmarksGrid: document.querySelector('.bookmarks-grid'),
+        editModeBtn: document.getElementById('editModeBtn'),
         editModal: document.getElementById('editModal'),
         confirmModal: document.getElementById('confirmModal'),
-        contextMenu: document.getElementById('contextMenu'),
         toast: document.getElementById('toast'),
         titleInput: document.getElementById('titleInput'),
         urlInput: document.getElementById('urlInput'),
         modalTitle: document.getElementById('modalTitle'),
         confirmTitle: document.getElementById('confirmTitle'),
-        confirmMessage: document.getElementById('confirmMessage')
+        confirmMessage: document.getElementById('confirmMessage'),
+        deleteBtn: document.getElementById('deleteBookmarkBtn')
     };
 
     // 加载书签
@@ -108,24 +106,20 @@ function bindEvents() {
     elements.searchInput.addEventListener('keypress', handleSearch);
     elements.searchBtn.addEventListener('click', handleSearch);
 
+    // 编辑模式切换
+    elements.editModeBtn.addEventListener('click', toggleEditMode);
+
     // 模态框关闭
     elements.editModal.querySelector('.modal-close').addEventListener('click', closeEditModal);
     elements.editModal.querySelector('.btn-secondary').addEventListener('click', closeEditModal);
     elements.editModal.querySelector('.btn-primary').addEventListener('click', handleSaveBookmark);
 
     // 删除按钮
-    elements.deleteBtn = document.getElementById('deleteBookmarkBtn');
     elements.deleteBtn.addEventListener('click', handleDeleteFromModal);
 
     // 确认对话框
     elements.confirmModal.querySelector('.btn-secondary').addEventListener('click', closeConfirmModal);
     elements.confirmModal.querySelector('.btn-danger').addEventListener('click', handleConfirmDelete);
-
-    // 点击外部关闭
-    document.addEventListener('click', handleDocumentClick);
-
-    // 右键菜单
-    document.addEventListener('contextmenu', handleContextMenu);
 
     // ESC 键关闭
     document.addEventListener('keydown', handleKeyDown);
@@ -160,6 +154,26 @@ function handleSearch(e) {
 
     const engine = SEARCH_ENGINES[state.currentEngine];
     window.open(engine.url + encodeURIComponent(searchTerm), '_blank');
+}
+
+/**
+ * 切换编辑模式
+ */
+function toggleEditMode() {
+    state.isEditMode = !state.isEditMode;
+    document.body.classList.toggle('edit-mode', state.isEditMode);
+    elements.editModeBtn.classList.toggle('active', state.isEditMode);
+
+    // 更新按钮文本
+    const editText = elements.editModeBtn.querySelector('.edit-text');
+    editText.textContent = state.isEditMode ? '完成' : '编辑';
+
+    // 退出编辑模式时，隐藏所有操作按钮
+    if (!state.isEditMode) {
+        document.querySelectorAll('.bookmark-card').forEach(card => {
+            card.classList.remove('show-actions');
+        });
+    }
 }
 
 /**
@@ -202,68 +216,41 @@ function createBookmarkCard(bookmark, index) {
     const actions = document.createElement('div');
     actions.className = 'bookmark-actions';
 
+    // 编辑按钮
     const editBtn = document.createElement('button');
     editBtn.className = 'action-btn edit-btn';
-    editBtn.innerHTML = '✏️';
+    editBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>';
     editBtn.title = '编辑';
     editBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        card.classList.remove('show-actions');
         openEditModal(index);
     });
 
+    // 删除按钮
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'action-btn delete-btn';
+    deleteBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>';
+    deleteBtn.title = '删除';
+    deleteBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        showConfirmDelete(index);
+    });
+
     actions.appendChild(editBtn);
+    actions.appendChild(deleteBtn);
 
     card.appendChild(img);
     card.appendChild(title);
     card.appendChild(actions);
 
     // 点击事件
-    card.addEventListener('click', () => handleBookmarkClick(bookmark));
-
-    // 右键显示操作按钮
-    card.addEventListener('contextmenu', (e) => {
-        e.preventDefault();
-        toggleActions(card, index);
-    });
-
-    // 触摸事件（长按显示操作按钮）
-    let pressTimer;
-    let isLongPress = false;
-
-    card.addEventListener('touchstart', (e) => {
-        isLongPress = false;
-        pressTimer = setTimeout(() => {
-            isLongPress = true;
-            e.preventDefault();
-            toggleActions(card, index);
-        }, 500);
-    });
-
-    card.addEventListener('touchend', () => {
-        clearTimeout(pressTimer);
-    });
-
-    card.addEventListener('touchmove', () => {
-        clearTimeout(pressTimer);
-    });
-
-    return card;
-}
-
-/**
- * 切换操作按钮显示状态
- */
-function toggleActions(card, index) {
-    // 先隐藏所有其他卡片的操作按钮
-    document.querySelectorAll('.bookmark-card.show-actions').forEach(c => {
-        if (c !== card) {
-            c.classList.remove('show-actions');
+    card.addEventListener('click', () => {
+        if (!state.isEditMode) {
+            handleBookmarkClick(bookmark);
         }
     });
 
-    // 切换当前卡片的操作按钮
-    card.classList.toggle('show-actions');
+    return card;
 }
 
 /**
@@ -271,22 +258,22 @@ function toggleActions(card, index) {
  */
 function createDefaultIcon(title) {
     const canvas = document.createElement('canvas');
-    canvas.width = 48;
-    canvas.height = 48;
+    canvas.width = 40;
+    canvas.height = 40;
     const ctx = canvas.getContext('2d');
 
     // 背景
-    ctx.fillStyle = '#4285f4';
+    ctx.fillStyle = '#6366f1';
     ctx.beginPath();
-    ctx.roundRect(0, 0, 48, 48, 8);
+    ctx.roundRect(0, 0, 40, 40, 8);
     ctx.fill();
 
     // 文字
     ctx.fillStyle = 'white';
-    ctx.font = 'bold 20px -apple-system, BlinkMacSystemFont, sans-serif';
+    ctx.font = 'bold 16px -apple-system, BlinkMacSystemFont, sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(title.charAt(0).toUpperCase(), 24, 24);
+    ctx.fillText(title.charAt(0).toUpperCase(), 20, 20);
 
     return canvas.toDataURL();
 }
@@ -297,7 +284,7 @@ function createDefaultIcon(title) {
 function createAddBookmarkCard() {
     const card = document.createElement('div');
     card.className = 'bookmark-card add-bookmark';
-    card.innerHTML = '+';
+    card.innerHTML = '<svg class="add-bookmark-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>';
     card.addEventListener('click', () => openEditModal(-1));
     return card;
 }
@@ -320,7 +307,6 @@ function handleBookmarkClick(bookmark) {
  */
 function openEditModal(index) {
     state.editingIndex = index;
-    closeContextMenu();
 
     const isEdit = index >= 0;
     elements.modalTitle.textContent = isEdit ? '编辑书签' : '添加书签';
@@ -413,7 +399,6 @@ function handleDeleteFromModal() {
  */
 function showConfirmDelete(index) {
     state.editingIndex = index;
-    closeContextMenu();
 
     const bookmark = state.bookmarks[index];
     elements.confirmTitle.textContent = '删除书签';
@@ -442,79 +427,9 @@ function handleConfirmDelete() {
     saveBookmarks();
     renderBookmarks();
     closeConfirmModal();
+    closeEditModal();
 
     showToast(`已删除 "${bookmark.title}"`, 'success');
-}
-
-/**
- * 显示右键菜单
- */
-function showContextMenu(e, index) {
-    state.contextMenuIndex = index;
-    const bookmark = state.bookmarks[index];
-
-    const menu = elements.contextMenu;
-    menu.innerHTML = '';
-
-    const items = [
-        { icon: '🔗', text: '打开链接', action: () => handleBookmarkClick(bookmark) },
-        { icon: '✏️', text: '编辑', action: () => openEditModal(index) },
-        { icon: '📋', text: '复制链接', action: () => copyToClipboard(bookmark.url) },
-        { icon: '🗑️', text: '删除', action: () => showConfirmDelete(index), className: 'danger' }
-    ];
-
-    items.forEach(item => {
-        const menuItem = document.createElement('div');
-        menuItem.className = `context-menu-item ${item.className || ''}`;
-        menuItem.innerHTML = `<span class="context-menu-icon">${item.icon}</span>${item.text}`;
-        menuItem.addEventListener('click', () => {
-            item.action();
-            closeContextMenu();
-        });
-        menu.appendChild(menuItem);
-    });
-
-    // 定位菜单
-    const x = Math.min(e.clientX, window.innerWidth - 180);
-    const y = Math.min(e.clientY, window.innerHeight - 200);
-    menu.style.left = `${x}px`;
-    menu.style.top = `${y}px`;
-    menu.classList.add('show');
-}
-
-/**
- * 关闭右键菜单
- */
-function closeContextMenu() {
-    elements.contextMenu.classList.remove('show');
-    state.contextMenuIndex = -1;
-}
-
-/**
- * 处理文档点击
- */
-function handleDocumentClick(e) {
-    if (!elements.contextMenu.contains(e.target)) {
-        closeContextMenu();
-    }
-
-    // 点击非书签区域时隐藏所有操作按钮
-    if (!e.target.closest('.bookmark-card')) {
-        document.querySelectorAll('.bookmark-card.show-actions').forEach(card => {
-            card.classList.remove('show-actions');
-        });
-    }
-}
-
-/**
- * 处理右键菜单
- */
-function handleContextMenu(e) {
-    // 如果不是书签卡片，关闭菜单
-    const card = e.target.closest('.bookmark-card');
-    if (!card || card.classList.contains('add-bookmark')) {
-        closeContextMenu();
-    }
 }
 
 /**
@@ -524,20 +439,6 @@ function handleKeyDown(e) {
     if (e.key === 'Escape') {
         closeEditModal();
         closeConfirmModal();
-        closeContextMenu();
-    }
-}
-
-/**
- * 复制到剪贴板
- */
-async function copyToClipboard(text) {
-    try {
-        await navigator.clipboard.writeText(text);
-        showToast('链接已复制', 'success');
-    } catch (error) {
-        console.error('复制失败:', error);
-        showToast('复制失败', 'error');
     }
 }
 

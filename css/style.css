@@ -7,27 +7,29 @@
 
 /* 颜色变量 */
 :root {
-    --primary-color: #4285f4;
-    --primary-hover: #3367d6;
-    --secondary-color: #34a853;
-    --secondary-hover: #2d8f47;
-    --danger-color: #ea4335;
-    --danger-hover: #c5221f;
-    --warning-color: #fbbc04;
-    --background-color: #f8f9fa;
+    --primary-color: #6366f1;
+    --primary-hover: #4f46e5;
+    --primary-light: rgba(99, 102, 241, 0.1);
+    --secondary-color: #10b981;
+    --secondary-hover: #059669;
+    --danger-color: #ef4444;
+    --danger-hover: #dc2626;
+    --danger-light: rgba(239, 68, 68, 0.1);
+    --warning-color: #f59e0b;
+    --background-color: #f8fafc;
     --surface-color: #ffffff;
-    --text-primary: #202124;
-    --text-secondary: #5f6368;
-    --text-tertiary: #80868b;
-    --border-color: #dadce0;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --text-tertiary: #94a3b8;
+    --border-color: #e2e8f0;
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07), 0 1px 3px rgba(0, 0, 0, 0.06);
-    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
-    --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.1), 0 10px 10px rgba(0, 0, 0, 0.04);
-    --radius-sm: 6px;
-    --radius-md: 8px;
-    --radius-lg: 12px;
-    --radius-xl: 16px;
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
     --transition-fast: 0.15s ease;
     --transition-normal: 0.2s ease;
     --transition-slow: 0.3s ease;
@@ -43,15 +45,61 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 20px;
+    padding: 0 20px 20px;
+}
+
+/* 顶部工具栏 */
+.toolbar {
+    width: 100%;
+    max-width: 1080px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 0;
+    margin-bottom: 8px;
+}
+
+.toolbar-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.edit-mode-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    background: var(--surface-color);
+    color: var(--text-secondary);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.edit-mode-btn:hover {
+    background: var(--background-color);
+    color: var(--text-primary);
+}
+
+.edit-mode-btn.active {
+    background: var(--primary-light);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.edit-icon {
+    font-size: 16px;
 }
 
 /* 搜索容器 */
 .search-container {
     width: 100%;
     max-width: 680px;
-    margin-top: 80px;
-    margin-bottom: 40px;
+    margin-bottom: 32px;
     text-align: center;
 }
 
@@ -66,7 +114,7 @@ body {
 .search-engine-btn {
     padding: 8px 20px;
     border: 1px solid var(--border-color);
-    border-radius: 24px;
+    border-radius: var(--radius-xl);
     background-color: var(--surface-color);
     color: var(--text-secondary);
     font-size: 14px;
@@ -77,8 +125,8 @@ body {
 }
 
 .search-engine-btn:hover {
-    background-color: #f1f3f4;
-    border-color: #c6c6c6;
+    background-color: var(--background-color);
+    border-color: #cbd5e1;
     color: var(--text-primary);
 }
 
@@ -102,7 +150,7 @@ body {
     display: flex;
     width: 100%;
     background: var(--surface-color);
-    border-radius: 28px;
+    border-radius: var(--radius-xl);
     box-shadow: var(--shadow-md);
     transition: box-shadow var(--transition-normal);
     overflow: hidden;
@@ -162,7 +210,7 @@ body {
 .bookmark-card {
     background: var(--surface-color);
     border-radius: var(--radius-md);
-    padding: 14px 10px;
+    padding: 16px 12px;
     cursor: pointer;
     transition: all var(--transition-normal);
     position: relative;
@@ -175,49 +223,51 @@ body {
 }
 
 .bookmark-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
     border-color: var(--border-color);
 }
 
 .bookmark-card:active {
-    transform: translateY(-2px);
+    transform: translateY(0);
 }
 
 .bookmark-card img {
-    width: 36px;
-    height: 36px;
-    margin-bottom: 8px;
-    border-radius: 6px;
+    width: 40px;
+    height: 40px;
+    margin-bottom: 10px;
+    border-radius: var(--radius-sm);
     object-fit: contain;
-    background: #f1f3f4;
-    padding: 3px;
+    background: #f1f5f9;
+    padding: 4px;
 }
 
 .bookmark-title {
     font-size: 12px;
     color: var(--text-primary);
     word-break: break-word;
-    line-height: 1.3;
+    line-height: 1.4;
     font-weight: 500;
-    max-height: 2.6em;
+    max-height: 2.8em;
     overflow: hidden;
 }
 
-/* 编辑和删除按钮容器 */
+/* 编辑模式下的操作按钮 */
 .bookmark-actions {
     position: absolute;
-    top: 8px;
-    right: 8px;
+    top: 6px;
+    right: 6px;
     display: flex;
     gap: 4px;
     opacity: 0;
-    transition: opacity var(--transition-fast);
+    transform: scale(0.8);
+    transition: all var(--transition-fast);
     pointer-events: none;
 }
 
-.bookmark-card.show-actions .bookmark-actions {
+.edit-mode .bookmark-actions {
     opacity: 1;
+    transform: scale(1);
     pointer-events: auto;
 }
 
@@ -231,32 +281,32 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 14px;
     transition: all var(--transition-fast);
-    opacity: 0.8;
 }
 
-.action-btn:hover {
-    opacity: 1;
-    transform: scale(1.1);
+.action-btn svg {
+    width: 14px;
+    height: 14px;
 }
 
 .edit-btn {
-    background: rgba(66, 133, 244, 0.1);
+    background: var(--primary-light);
     color: var(--primary-color);
 }
 
 .edit-btn:hover {
-    background: rgba(66, 133, 244, 0.2);
+    background: var(--primary-color);
+    color: white;
 }
 
 .delete-btn {
-    background: rgba(234, 67, 53, 0.1);
+    background: var(--danger-light);
     color: var(--danger-color);
 }
 
 .delete-btn:hover {
-    background: rgba(234, 67, 53, 0.2);
+    background: var(--danger-color);
+    color: white;
 }
 
 /* 添加书签按钮 */
@@ -265,7 +315,7 @@ body {
     border: 2px dashed var(--border-color);
     box-shadow: none;
     color: var(--text-tertiary);
-    font-size: 24px;
+    font-size: 28px;
     font-weight: 300;
     transition: all var(--transition-normal);
 }
@@ -273,9 +323,14 @@ body {
 .add-bookmark:hover {
     border-color: var(--primary-color);
     color: var(--primary-color);
-    background: rgba(66, 133, 244, 0.04);
-    transform: translateY(-4px);
+    background: var(--primary-light);
+    transform: translateY(-2px);
     box-shadow: var(--shadow-md);
+}
+
+.add-bookmark-icon {
+    width: 24px;
+    height: 24px;
 }
 
 /* 模态框 */
@@ -300,8 +355,8 @@ body {
 
 .modal-content {
     background-color: var(--surface-color);
-    padding: 32px;
-    border-radius: var(--radius-xl);
+    padding: 28px;
+    border-radius: var(--radius-lg);
     width: 90%;
     max-width: 420px;
     box-shadow: var(--shadow-xl);
@@ -316,7 +371,7 @@ body {
 }
 
 .modal-header h3 {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 600;
     color: var(--text-primary);
 }
@@ -328,41 +383,46 @@ body {
 }
 
 .btn-delete {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     border: none;
-    border-radius: 50%;
-    background: rgba(234, 67, 53, 0.1);
+    border-radius: var(--radius-sm);
+    background: var(--danger-light);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
     color: var(--danger-color);
     transition: all var(--transition-fast);
 }
 
 .btn-delete:hover {
-    background: rgba(234, 67, 53, 0.2);
+    background: var(--danger-color);
+    color: white;
+}
+
+.btn-delete svg {
+    width: 18px;
+    height: 18px;
 }
 
 .modal-close {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     border: none;
-    border-radius: 50%;
-    background: #f1f3f4;
+    border-radius: var(--radius-sm);
+    background: #f1f5f9;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
+    font-size: 20px;
     color: var(--text-secondary);
     transition: all var(--transition-fast);
 }
 
 .modal-close:hover {
-    background: #e8eaed;
+    background: #e2e8f0;
     color: var(--text-primary);
 }
 
@@ -386,7 +446,7 @@ body {
     width: 100%;
     padding: 12px 16px;
     border: 1px solid var(--border-color);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-sm);
     font-size: 14px;
     color: var(--text-primary);
     transition: all var(--transition-fast);
@@ -395,7 +455,7 @@ body {
 
 .form-group input:focus {
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.1);
+    box-shadow: 0 0 0 3px var(--primary-light);
 }
 
 .form-group input::placeholder {
@@ -411,7 +471,7 @@ body {
 .btn {
     padding: 10px 24px;
     border: none;
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-sm);
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
@@ -428,12 +488,12 @@ body {
 }
 
 .btn-secondary {
-    background: #f1f3f4;
+    background: #f1f5f9;
     color: var(--text-primary);
 }
 
 .btn-secondary:hover {
-    background: #e8eaed;
+    background: #e2e8f0;
 }
 
 .btn-danger {
@@ -456,8 +516,20 @@ body {
 }
 
 .confirm-icon {
-    font-size: 48px;
-    margin-bottom: 16px;
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 16px;
+    background: var(--danger-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--danger-color);
+}
+
+.confirm-icon svg {
+    width: 32px;
+    height: 32px;
 }
 
 .confirm-title {
@@ -470,50 +542,7 @@ body {
 .confirm-message {
     font-size: 14px;
     color: var(--text-secondary);
-}
-
-/* 右键菜单 */
-.context-menu {
-    position: fixed;
-    background: var(--surface-color);
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-lg);
-    padding: 8px 0;
-    z-index: 1001;
-    min-width: 160px;
-    display: none;
-}
-
-.context-menu.show {
-    display: block;
-    animation: fadeIn var(--transition-fast);
-}
-
-.context-menu-item {
-    padding: 10px 16px;
-    font-size: 14px;
-    color: var(--text-primary);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: background var(--transition-fast);
-}
-
-.context-menu-item:hover {
-    background: #f1f3f4;
-}
-
-.context-menu-item.danger {
-    color: var(--danger-color);
-}
-
-.context-menu-item.danger:hover {
-    background: rgba(234, 67, 53, 0.04);
-}
-
-.context-menu-icon {
-    font-size: 16px;
+    line-height: 1.5;
 }
 
 /* 提示消息 */
@@ -522,11 +551,12 @@ body {
     bottom: 24px;
     left: 50%;
     transform: translateX(-50%) translateY(100px);
-    background: #323232;
+    background: var(--text-primary);
     color: white;
     padding: 12px 24px;
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-sm);
     font-size: 14px;
+    font-weight: 500;
     z-index: 1002;
     transition: transform var(--transition-slow);
     box-shadow: var(--shadow-lg);
@@ -567,8 +597,20 @@ body {
 
 /* 响应式设计 */
 @media (max-width: 768px) {
+    body {
+        padding: 0 16px 16px;
+    }
+
+    .toolbar {
+        padding: 12px 0;
+    }
+
+    .toolbar-title {
+        font-size: 18px;
+    }
+
     .search-container {
-        margin-top: 40px;
+        margin-bottom: 24px;
     }
 
     .bookmarks-grid {
@@ -577,13 +619,13 @@ body {
     }
 
     .bookmark-card {
-        padding: 12px 8px;
+        padding: 14px 10px;
     }
 
     .bookmark-card img {
-        width: 32px;
-        height: 32px;
-        margin-bottom: 6px;
+        width: 36px;
+        height: 36px;
+        margin-bottom: 8px;
     }
 
     .bookmark-title {
@@ -602,11 +644,23 @@ body {
 
 @media (max-width: 480px) {
     body {
-        padding: 10px;
+        padding: 0 12px 12px;
+    }
+
+    .toolbar {
+        padding: 10px 0;
+    }
+
+    .toolbar-title {
+        font-size: 16px;
+    }
+
+    .edit-mode-btn {
+        padding: 6px 12px;
+        font-size: 13px;
     }
 
     .search-container {
-        margin-top: 24px;
         margin-bottom: 20px;
     }
 
@@ -616,21 +670,31 @@ body {
     }
 
     .bookmark-card {
-        padding: 10px 6px;
+        padding: 12px 8px;
     }
 
     .bookmark-card img {
-        width: 28px;
-        height: 28px;
-        margin-bottom: 4px;
+        width: 32px;
+        height: 32px;
+        margin-bottom: 6px;
     }
 
     .bookmark-title {
         font-size: 10px;
     }
 
+    .action-btn {
+        width: 24px;
+        height: 24px;
+    }
+
+    .action-btn svg {
+        width: 12px;
+        height: 12px;
+    }
+
     .add-bookmark {
-        font-size: 20px;
+        font-size: 24px;
     }
 }
 
@@ -657,6 +721,6 @@ body {
 
 /* 选择样式 */
 ::selection {
-    background: rgba(66, 133, 244, 0.3);
+    background: var(--primary-light);
     color: var(--text-primary);
 }

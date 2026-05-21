@@ -9,6 +9,15 @@
     <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
+    <!-- 顶部工具栏 -->
+    <header class="toolbar">
+        <div class="toolbar-title">书签管理</div>
+        <button class="edit-mode-btn" id="editModeBtn" aria-label="编辑模式">
+            <span class="edit-icon">✏️</span>
+            <span class="edit-text">编辑</span>
+        </button>
+    </header>
+
     <!-- 搜索容器 -->
     <div class="search-container">
         <div class="search-engines" role="radiogroup" aria-label="选择搜索引擎">
@@ -52,7 +61,14 @@
             <div class="modal-header">
                 <h3 id="modalTitle">添加书签</h3>
                 <div class="modal-header-actions">
-                    <button class="btn-delete" id="deleteBookmarkBtn" aria-label="删除书签" style="display: none;">🗑️</button>
+                    <button class="btn-delete" id="deleteBookmarkBtn" aria-label="删除书签" style="display: none;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            <line x1="10" y1="11" x2="10" y2="17"></line>
+                            <line x1="14" y1="11" x2="14" y2="17"></line>
+                        </svg>
+                    </button>
                     <button class="modal-close" aria-label="关闭">&times;</button>
                 </div>
             </div>
@@ -87,7 +103,13 @@
     <div class="modal confirm-dialog" id="confirmModal" role="dialog" aria-modal="true">
         <div class="modal-content">
             <div class="modal-body">
-                <div class="confirm-icon">⚠️</div>
+                <div class="confirm-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                </div>
                 <div class="confirm-title" id="confirmTitle">删除书签</div>
                 <div class="confirm-message" id="confirmMessage">确定要删除这个书签吗？</div>
             </div>
@@ -96,11 +118,6 @@
                 <button class="btn btn-danger">删除</button>
             </div>
         </div>
-    </div>
-
-    <!-- 右键菜单 -->
-    <div class="context-menu" id="contextMenu" role="menu">
-        <!-- 菜单项将通过 JavaScript 动态生成 -->
     </div>
 
     <!-- 提示消息 -->
