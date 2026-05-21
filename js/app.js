@@ -113,6 +113,10 @@ function bindEvents() {
     elements.editModal.querySelector('.btn-secondary').addEventListener('click', closeEditModal);
     elements.editModal.querySelector('.btn-primary').addEventListener('click', handleSaveBookmark);
 
+    // 删除按钮
+    elements.deleteBtn = document.getElementById('deleteBookmarkBtn');
+    elements.deleteBtn.addEventListener('click', handleDeleteFromModal);
+
     // 确认对话框
     elements.confirmModal.querySelector('.btn-secondary').addEventListener('click', closeConfirmModal);
     elements.confirmModal.querySelector('.btn-danger').addEventListener('click', handleConfirmDelete);
@@ -208,18 +212,7 @@ function createBookmarkCard(bookmark, index) {
         openEditModal(index);
     });
 
-    const deleteBtn = document.createElement('button');
-    deleteBtn.className = 'action-btn delete-btn';
-    deleteBtn.innerHTML = '🗑️';
-    deleteBtn.title = '删除';
-    deleteBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        card.classList.remove('show-actions');
-        showConfirmDelete(index);
-    });
-
     actions.appendChild(editBtn);
-    actions.appendChild(deleteBtn);
 
     card.appendChild(img);
     card.appendChild(title);
@@ -242,6 +235,7 @@ function createBookmarkCard(bookmark, index) {
         isLongPress = false;
         pressTimer = setTimeout(() => {
             isLongPress = true;
+            e.preventDefault();
             toggleActions(card, index);
         }, 500);
     });
@@ -333,6 +327,9 @@ function openEditModal(index) {
     elements.titleInput.value = isEdit ? state.bookmarks[index].title : '';
     elements.urlInput.value = isEdit ? state.bookmarks[index].url : '';
 
+    // 显示或隐藏删除按钮
+    elements.deleteBtn.style.display = isEdit ? 'flex' : 'none';
+
     elements.editModal.classList.add('show');
     elements.titleInput.focus();
 }
@@ -396,6 +393,19 @@ function handleSaveBookmark() {
     saveBookmarks();
     renderBookmarks();
     closeEditModal();
+}
+
+/**
+ * 从编辑模态框删除书签
+ */
+function handleDeleteFromModal() {
+    if (state.editingIndex < 0) return;
+
+    const bookmark = state.bookmarks[state.editingIndex];
+    elements.confirmTitle.textContent = '删除书签';
+    elements.confirmMessage.textContent = `确定要删除 "${bookmark.title}" 吗？此操作无法撤销。`;
+
+    elements.confirmModal.classList.add('show');
 }
 
 /**
