@@ -204,6 +204,7 @@ function createBookmarkCard(bookmark, index) {
     editBtn.title = '编辑';
     editBtn.addEventListener('click', (e) => {
         e.stopPropagation();
+        card.classList.remove('show-actions');
         openEditModal(index);
     });
 
@@ -213,6 +214,7 @@ function createBookmarkCard(bookmark, index) {
     deleteBtn.title = '删除';
     deleteBtn.addEventListener('click', (e) => {
         e.stopPropagation();
+        card.classList.remove('show-actions');
         showConfirmDelete(index);
     });
 
@@ -226,13 +228,13 @@ function createBookmarkCard(bookmark, index) {
     // 点击事件
     card.addEventListener('click', () => handleBookmarkClick(bookmark));
 
-    // 右键菜单
+    // 右键显示操作按钮
     card.addEventListener('contextmenu', (e) => {
         e.preventDefault();
-        showContextMenu(e, index);
+        toggleActions(card, index);
     });
 
-    // 触摸事件（长按）
+    // 触摸事件（长按显示操作按钮）
     let pressTimer;
     let isLongPress = false;
 
@@ -240,7 +242,7 @@ function createBookmarkCard(bookmark, index) {
         isLongPress = false;
         pressTimer = setTimeout(() => {
             isLongPress = true;
-            showContextMenu(e, index);
+            toggleActions(card, index);
         }, 500);
     });
 
@@ -253,6 +255,21 @@ function createBookmarkCard(bookmark, index) {
     });
 
     return card;
+}
+
+/**
+ * 切换操作按钮显示状态
+ */
+function toggleActions(card, index) {
+    // 先隐藏所有其他卡片的操作按钮
+    document.querySelectorAll('.bookmark-card.show-actions').forEach(c => {
+        if (c !== card) {
+            c.classList.remove('show-actions');
+        }
+    });
+
+    // 切换当前卡片的操作按钮
+    card.classList.toggle('show-actions');
 }
 
 /**
@@ -469,6 +486,13 @@ function closeContextMenu() {
 function handleDocumentClick(e) {
     if (!elements.contextMenu.contains(e.target)) {
         closeContextMenu();
+    }
+
+    // 点击非书签区域时隐藏所有操作按钮
+    if (!e.target.closest('.bookmark-card')) {
+        document.querySelectorAll('.bookmark-card.show-actions').forEach(card => {
+            card.classList.remove('show-actions');
+        });
     }
 }
 

@@ -213,11 +213,12 @@ body {
     gap: 4px;
     opacity: 0;
     transition: opacity var(--transition-fast);
+    pointer-events: none;
 }
 
-.bookmark-card:hover .bookmark-actions,
 .bookmark-card.show-actions .bookmark-actions {
     opacity: 1;
+    pointer-events: auto;
 }
 
 /* 操作按钮 */
