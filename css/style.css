@@ -255,19 +255,19 @@ body {
 /* 编辑模式下的操作按钮 */
 .bookmark-actions {
     position: absolute;
-    top: 6px;
-    right: 6px;
+    top: 4px;
+    left: 50%;
+    transform: translateX(-50%) scale(0.8);
     display: flex;
-    gap: 4px;
+    gap: 6px;
     opacity: 0;
-    transform: scale(0.8);
     transition: all var(--transition-fast);
     pointer-events: none;
 }
 
 .edit-mode .bookmark-actions {
     opacity: 1;
-    transform: scale(1);
+    transform: translateX(-50%) scale(1);
     pointer-events: auto;
 }
 
@@ -374,36 +374,6 @@ body {
     font-size: 18px;
     font-weight: 600;
     color: var(--text-primary);
-}
-
-.modal-header-actions {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.btn-delete {
-    width: 36px;
-    height: 36px;
-    border: none;
-    border-radius: var(--radius-sm);
-    background: var(--danger-light);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--danger-color);
-    transition: all var(--transition-fast);
-}
-
-.btn-delete:hover {
-    background: var(--danger-color);
-    color: white;
-}
-
-.btn-delete svg {
-    width: 18px;
-    height: 18px;
 }
 
 .modal-close {
