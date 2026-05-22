@@ -48,19 +48,24 @@ function init() {
         searchBtn: document.querySelector('.search-btn'),
         bookmarksGrid: document.querySelector('.bookmarks-grid'),
         editModeBtn: document.getElementById('editModeBtn'),
+        themeToggleBtn: document.getElementById('themeToggleBtn'),
         editModal: document.getElementById('editModal'),
         confirmModal: document.getElementById('confirmModal'),
         toast: document.getElementById('toast'),
         titleInput: document.getElementById('titleInput'),
         urlInput: document.getElementById('urlInput'),
+        iconInput: document.getElementById('iconInput'),
+        iconPreview: document.getElementById('iconPreview'),
         modalTitle: document.getElementById('modalTitle'),
         confirmTitle: document.getElementById('confirmTitle'),
-        confirmMessage: document.getElementById('confirmMessage'),
-        deleteBtn: document.getElementById('deleteBookmarkBtn')
+        confirmMessage: document.getElementById('confirmMessage')
     };
 
     // 加载书签
     loadBookmarks();
+
+    // 初始化主题
+    initTheme();
 
     // 绑定事件
     bindEvents();
@@ -96,6 +101,28 @@ function saveBookmarks() {
 }
 
 /**
+ * 初始化主题
+ */
+function initTheme() {
+    const saved = localStorage.getItem('theme');
+    if (saved === 'dark') {
+        document.documentElement.classList.add('dark');
+    } else if (saved === 'light') {
+        document.documentElement.classList.remove('dark');
+    }
+    // 'auto' 或未设置时，跟随系统（由 CSS media query 处理）
+}
+
+/**
+ * 切换主题
+ */
+function toggleTheme() {
+    const isDark = document.documentElement.classList.toggle('dark');
+    document.documentElement.classList.toggle('light', !isDark);
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+}
+
+/**
  * 绑定事件
  */
 function bindEvents() {
@@ -103,11 +130,14 @@ function bindEvents() {
     elements.searchEngines.addEventListener('click', handleEngineSwitch);
 
     // 搜索功能
-    elements.searchInput.addEventListener('keypress', handleSearch);
+    elements.searchInput.addEventListener('keydown', handleSearch);
     elements.searchBtn.addEventListener('click', handleSearch);
 
     // 编辑模式切换
     elements.editModeBtn.addEventListener('click', toggleEditMode);
+
+    // 主题切换
+    elements.themeToggleBtn.addEventListener('click', toggleTheme);
 
     // 模态框关闭
     elements.editModal.querySelector('.modal-close').addEventListener('click', closeEditModal);
@@ -117,6 +147,10 @@ function bindEvents() {
     // 确认对话框
     elements.confirmModal.querySelector('.btn-secondary').addEventListener('click', closeConfirmModal);
     elements.confirmModal.querySelector('.btn-danger').addEventListener('click', handleConfirmDelete);
+
+    // 图标输入预览
+    elements.iconInput.addEventListener('input', updateIconPreview);
+    elements.urlInput.addEventListener('blur', autoFillIcon);
 
     // ESC 键关闭
     document.addEventListener('keydown', handleKeyDown);
@@ -141,7 +175,7 @@ function handleEngineSwitch(e) {
  * 处理搜索
  */
 function handleSearch(e) {
-    if (e.type === 'keypress' && e.key !== 'Enter') return;
+    if (e.type === 'keydown' && e.key !== 'Enter') return;
 
     const searchTerm = elements.searchInput.value.trim();
     if (!searchTerm) {
@@ -161,9 +195,9 @@ function toggleEditMode() {
     document.body.classList.toggle('edit-mode', state.isEditMode);
     elements.editModeBtn.classList.toggle('active', state.isEditMode);
 
-    // 更新按钮文本
-    const editText = elements.editModeBtn.querySelector('.edit-text');
-    editText.textContent = state.isEditMode ? '完成' : '编辑';
+    // 更新按钮图标
+    const editIcon = elements.editModeBtn.querySelector('.edit-icon');
+    editIcon.textContent = state.isEditMode ? '✅' : '✏️';
 
     // 退出编辑模式时，隐藏所有操作按钮
     if (!state.isEditMode) {
@@ -258,11 +292,21 @@ function createDefaultIcon(title) {
     canvas.width = 40;
     canvas.height = 40;
     const ctx = canvas.getContext('2d');
+    const r = 8;
 
-    // 背景
+    // 背景（兼容 roundRect）
     ctx.fillStyle = '#6366f1';
     ctx.beginPath();
-    ctx.roundRect(0, 0, 40, 40, 8);
+    if (ctx.roundRect) {
+        ctx.roundRect(0, 0, 40, 40, r);
+    } else {
+        ctx.moveTo(r, 0);
+        ctx.arcTo(40, 0, 40, 40, r);
+        ctx.arcTo(40, 40, 0, 40, r);
+        ctx.arcTo(0, 40, 0, 0, r);
+        ctx.arcTo(0, 0, 40, 0, r);
+        ctx.closePath();
+    }
     ctx.fill();
 
     // 文字
@@ -309,6 +353,10 @@ function openEditModal(index) {
     elements.modalTitle.textContent = isEdit ? '编辑书签' : '添加书签';
     elements.titleInput.value = isEdit ? state.bookmarks[index].title : '';
     elements.urlInput.value = isEdit ? state.bookmarks[index].url : '';
+    elements.iconInput.value = isEdit ? (state.bookmarks[index].icon || '') : '';
+
+    // 更新图标预览
+    updateIconPreview();
 
     elements.editModal.classList.add('show');
     elements.titleInput.focus();
@@ -328,6 +376,7 @@ function closeEditModal() {
 function handleSaveBookmark() {
     const title = elements.titleInput.value.trim();
     const url = elements.urlInput.value.trim();
+    const customIcon = elements.iconInput.value.trim();
 
     if (!title) {
         showToast('请输入标题', 'error');
@@ -354,18 +403,22 @@ function handleSaveBookmark() {
         return;
     }
 
-    const bookmark = {
-        title,
-        url: normalizedUrl,
-        icon: `${new URL(normalizedUrl).origin}/favicon.ico`
-    };
+    // 图标：优先使用自定义图标，否则使用网站默认 favicon
+    let icon = customIcon;
+    if (!icon) {
+        try {
+            icon = `${new URL(normalizedUrl).origin}/favicon.ico`;
+        } catch {
+            icon = '';
+        }
+    }
+
+    const bookmark = { title, url: normalizedUrl, icon };
 
     if (state.editingIndex === -1) {
-        // 添加新书签
         state.bookmarks.push(bookmark);
         showToast('书签已添加', 'success');
     } else {
-        // 更新现有书签
         state.bookmarks[state.editingIndex] = bookmark;
         showToast('书签已更新', 'success');
     }
@@ -411,6 +464,49 @@ function handleConfirmDelete() {
     closeEditModal();
 
     showToast(`已删除 "${bookmark.title}"`, 'success');
+}
+
+/**
+ * 更新图标预览
+ */
+function updateIconPreview() {
+    const iconUrl = elements.iconInput.value.trim();
+    const preview = elements.iconPreview;
+
+    if (iconUrl) {
+        preview.innerHTML = '';
+        const img = document.createElement('img');
+        img.src = iconUrl;
+        img.onerror = function() {
+            preview.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>';
+        };
+        preview.appendChild(img);
+    } else {
+        preview.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>';
+    }
+}
+
+/**
+ * URL 输入失焦时自动填充图标
+ */
+function autoFillIcon() {
+    const url = elements.urlInput.value.trim();
+    const currentIcon = elements.iconInput.value.trim();
+
+    // 仅在图标输入框为空时自动填充
+    if (url && !currentIcon) {
+        try {
+            let normalizedUrl = url;
+            if (!/^https?:\/\//i.test(url)) {
+                normalizedUrl = 'https://' + url;
+            }
+            const faviconUrl = `${new URL(normalizedUrl).origin}/favicon.ico`;
+            elements.iconInput.value = faviconUrl;
+            updateIconPreview();
+        } catch {
+            // URL 无效时不处理
+        }
+    }
 }
 
 /**
