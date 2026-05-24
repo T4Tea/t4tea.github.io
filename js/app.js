@@ -390,9 +390,9 @@ function handleSaveBookmark() {
         return;
     }
 
-    // 验证和规范化 URL
-    let normalizedUrl = url;
+    // 验证 URL
     try {
+        let normalizedUrl = url;
         if (!/^https?:\/\//i.test(url)) {
             normalizedUrl = 'https://' + url;
         }
@@ -407,13 +407,17 @@ function handleSaveBookmark() {
     let icon = customIcon;
     if (!icon) {
         try {
-            icon = `${new URL(normalizedUrl).origin}/favicon.ico`;
+            let iconUrl = url;
+            if (!/^https?:\/\//i.test(url)) {
+                iconUrl = 'https://' + url;
+            }
+            icon = `${new URL(iconUrl).origin}/favicon.ico`;
         } catch {
             icon = '';
         }
     }
 
-    const bookmark = { title, url: normalizedUrl, icon };
+    const bookmark = { title, url, icon };
 
     if (state.editingIndex === -1) {
         state.bookmarks.push(bookmark);
